@@ -20,11 +20,11 @@ var MY_SENSOR = {
 
 
 	var options = {
-		host: '',
-		port: 80,
+		host: config.host,
+		port: config.port,
 		path: '/api/temperature',
                 headers: {
-                  'Authorization': 'Basic ' + new Buffer('' + ':' + '').toString('base64')
+                  'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
                 }  
 	};
 
