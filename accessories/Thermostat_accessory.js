@@ -20,7 +20,7 @@ var MY_SENSOR = {
 // Generate a consistent UUID for our Temperature Sensor Accessory that will remain the same
 // even when restarting our server. We use the `uuid.generate` helper function to create
 // a deterministic UUID based on an arbitrary "namespace" and the string "temperature-sensor".
-var sensorUUID = uuid.generate('hap-nodejs:accessories:temperature-sensor');
+var sensorUUID = uuid.generate('hap-nodejs:accessories:termostat');
 
 // This is the Accessory that we'll return to HAP-NodeJS that represents our fake lock.
 var sensor = exports.accessory = new Accessory('Temperature Sensor', sensorUUID);
