@@ -2,17 +2,44 @@ var Accessory = require('../').Accessory;
 var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
 var uuid = require('../').uuid;
+var http = require('http');
 
 // here's a fake temperature sensor device that we'll expose to HomeKit
-var FAKE_SENSOR = {
-  currentTemperature: 50,
+var MY_SENSOR = {
+  currentTemperature: 0,
   getTemperature: function() { 
     console.log("Getting the current temperature!");
-    return FAKE_SENSOR.currentTemperature;
+    return MY_SENSOR.currentTemperature;
   },
   randomizeTemperature: function() {
     // randomize temperature to a value between 0 and 100
-    FAKE_SENSOR.currentTemperature = Math.round(Math.random() * 100);
+    MY_SENSOR.currentTemperature = Math.round(Math.random() * 100);
+  },
+  requestTemperature: function() {
+
+
+	var options = {
+		host: '',
+		port: 80,
+		path: '/api/temperature',
+                headers: {
+                  'Authorization': 'Basic ' + new Buffer('' + ':' + '').toString('base64')
+                }  
+	};
+
+	http.get(options, function(resp){
+		var body = '';
+		resp.on('data', function(chunk){
+			body += chunk;
+		});
+		resp.on('end', function() {
+            // Data reception is done, do whatever with it!
+           var parsed = JSON.parse(body);
+           MY_SENSOR.currentTemperature = parsed.temp;
+        });
+	}).on("error", function(e){
+		console.log("Got error: " + e.message);
+	});
   }
 }
 
@@ -37,17 +64,17 @@ sensor
   .on('get', function(callback) {
     
     // return our current value
-    callback(null, FAKE_SENSOR.getTemperature());
+    callback(null, MY_SENSOR.getTemperature());
   });
 
 // randomize our temperature reading every 3 seconds
 setInterval(function() {
   
-  FAKE_SENSOR.randomizeTemperature();
+  MY_SENSOR.requestTemperature();
   
   // update the characteristic value so interested iOS devices can get notified
   sensor
     .getService(Service.TemperatureSensor)
-    .setCharacteristic(Characteristic.CurrentTemperature, FAKE_SENSOR.currentTemperature);
+    .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
   
-}, 3000);
+}, 60000);
