@@ -2,6 +2,7 @@
 var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
 var types = require("./types.js")
+var uuid = require('../').uuid;
 var exports = module.exports = {};
 var http = require('http');
 var config = require('../config');
