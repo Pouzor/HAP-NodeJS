@@ -9,7 +9,7 @@ var config = require('../config');
 
 var execute = function(accessory,characteristic,value){ console.log("executed accessory: " + accessory + ", and characteristic: " + characteristic + ", with value: " +  value + "."); }
 
-exports.accessory = {
+var termo = exports.accessory = new Accessory({
   displayName: "Thermostat 1",
   username: "CA:3E:BC:4D:5E:FF",
   pincode: "031-45-154",
@@ -137,6 +137,6 @@ exports.accessory = {
       manfDescription: "Unit"
     }]
   }]
-}
+});
 
-execute(accessory, types.CURRENT_TEMPERATURE_CTYPE, 18);
+execute(termo, types.CURRENT_TEMPERATURE_CTYPE, 18);
