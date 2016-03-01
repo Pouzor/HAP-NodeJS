@@ -1,48 +1,15 @@
 // HomeKit types required
-var Service = require('../').Service;
-var Accessory = require('../').Accessory;
-var Characteristic = require('../').Characteristic;
 var types = require("./types.js")
-var uuid = require('../').uuid;
 var exports = module.exports = {};
 var http = require('http');
-var config = require('../config');
+var config = require('../config');.
+
+
+
 
 var execute = function(accessory,characteristic,value){ console.log("executed accessory: " + accessory + ", and characteristic: " + characteristic + ", with value: " +  value + "."); }
 
-var MY_SENSOR = {
-  currentTemperature: 0,
-  getTemperature: function() {
-    return MY_SENSOR.currentTemperature;
-  }
-};
-
-// Generate a consistent UUID for our Temperature Sensor Accessory that will remain the same
-// even when restarting our server. We use the `uuid.generate` helper function to create
-// a deterministic UUID based on an arbitrary "namespace" and the string "temperature-sensor".
-var sensorUUID = uuid.generate('hap-nodejs:accessories:termostat');
-
-// This is the Accessory that we'll return to HAP-NodeJS that represents our fake lock.
-var sensor = exports.accessory = new Accessory('Temperature Sensor', sensorUUID);
-
-// Add properties for publishing (in case we're using Core.js and not BridgedCore.js)
-sensor.username = "CA:3E:BC:4D:5E:FF";
-sensor.pincode = "031-45-154";
-sensor.displayName = "Thermostat 1";
-
-// Add the actual TemperatureSensor Service.
-// We can see the complete list of Services and Characteristics in `lib/gen/HomeKitTypes.js`
-sensor
-  .addService(Service.TemperatureSensor)
-  .getCharacteristic(Characteristic.CurrentTemperature)
-  .on('get', function(callback) {
-    
-    // return our current value
-    callback(null, MY_SENSOR.getTemperature());
-  });
-
-/*
-var sensor = exports.accessory = {
+exports.accessory = {
   displayName: "Thermostat 1",
   username: "CA:3E:BC:4D:5E:FF",
   pincode: "031-45-154",
@@ -170,45 +137,6 @@ var sensor = exports.accessory = {
       manfDescription: "Unit"
     }]
   }]
-}*/
+}
 
-  function requestTemperature() {
-
-
-	var options = {
-		host: config.host,
-		port: config.port,
-		path: '/api/temperature',
-                headers: {
-                  'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
-                }  
-	};
-
-	http.get(options, function(resp){
-		var body = '';
-		resp.on('data', function(chunk){
-			body += chunk;
-		});
-		resp.on('end', function() {
-            // Data reception is done, do whatever with it!
-           var parsed = JSON.parse(body);
-           console.log(parsed.temp);
-           MY_SENSOR.currentTemperature = parsed.temp;
-        });
-	}).on("error", function(e){
-		console.log("Got error: " + e.message);
-	});
-  }
-
-setInterval(function() {
-  
-  requestTemperature();
-  
-  // update the characteristic value so interested iOS devices can get notified
-  sensor
-    .getService(Service.TemperatureSensor)
-    .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
-  
-}, 5000);
-
-
+execute(export.accessory, types.CURRENT_TEMPERATURE_CTYPE, 18);
