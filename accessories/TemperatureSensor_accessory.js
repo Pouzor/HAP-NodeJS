@@ -8,13 +8,8 @@ var config = require('../config');
 // here's a fake temperature sensor device that we'll expose to HomeKit
 var MY_SENSOR = {
   currentTemperature: 0,
-  getTemperature: function() { 
-    console.log("Getting the current temperature!");
+  getTemperature: function() {
     return MY_SENSOR.currentTemperature;
-  },
-  randomizeTemperature: function() {
-    // randomize temperature to a value between 0 and 100
-    MY_SENSOR.currentTemperature = Math.round(Math.random() * 100);
   },
   requestTemperature: function() {
 
@@ -36,6 +31,7 @@ var MY_SENSOR = {
 		resp.on('end', function() {
             // Data reception is done, do whatever with it!
            var parsed = JSON.parse(body);
+            console.log(parsed.temp);
            MY_SENSOR.currentTemperature = parsed.temp;
         });
 	}).on("error", function(e){
@@ -68,7 +64,7 @@ sensor
     callback(null, MY_SENSOR.getTemperature());
   });
 
-// randomize our temperature reading every 3 seconds
+
 setInterval(function() {
   
   MY_SENSOR.requestTemperature();
