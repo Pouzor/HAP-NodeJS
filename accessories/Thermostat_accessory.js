@@ -139,4 +139,4 @@ exports.accessory = {
   }]
 }
 
-execute(export.accessory, types.CURRENT_TEMPERATURE_CTYPE, 18);
+execute(accessory, types.CURRENT_TEMPERATURE_CTYPE, 18);
