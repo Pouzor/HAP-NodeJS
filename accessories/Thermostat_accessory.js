@@ -1,4 +1,6 @@
 // HomeKit types required
+var Service = require('../').Service;
+var Characteristic = require('../').Characteristic;
 var types = require("./types.js")
 var exports = module.exports = {};
 var http = require('http');
