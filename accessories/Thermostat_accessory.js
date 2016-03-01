@@ -2,7 +2,7 @@
 var types = require("./types.js")
 var exports = module.exports = {};
 var http = require('http');
-var config = require('../config');.
+var config = require('../config');
 
 
 
