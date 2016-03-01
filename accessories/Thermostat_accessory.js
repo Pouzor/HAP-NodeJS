@@ -1,5 +1,6 @@
 // HomeKit types required
 var Service = require('../').Service;
+var Accessory = require('../').Accessory;
 var Characteristic = require('../').Characteristic;
 var types = require("./types.js")
 var uuid = require('../').uuid;
