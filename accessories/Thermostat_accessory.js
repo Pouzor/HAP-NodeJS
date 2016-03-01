@@ -4,12 +4,15 @@ var exports = module.exports = {};
 var http = require('http');
 var config = require('../config');
 var Accessory = require('../').Accessory;
+var Service = require('../').Service;
+var Characteristic = require('../').Characteristic;
+var uuid = require('../').uuid;
 
 
 
 var execute = function(accessory,characteristic,value){ console.log("executed accessory: " + accessory + ", and characteristic: " + characteristic + ", with value: " +  value + "."); }
 
-var termo = exports.accessory = new Accessory({
+var accessory = {
   displayName: "Thermostat 1",
   username: "CA:3E:BC:4D:5E:FF",
   pincode: "031-45-154",
@@ -139,4 +142,46 @@ var termo = exports.accessory = new Accessory({
   }]
 });
 
-execute(termo, types.CURRENT_TEMPERATURE_CTYPE, 18);
+var sensorUUID = uuid.generate('hap-nodejs:accessories:termo');
+
+// This is the Accessory that we'll return to HAP-NodeJS that represents our fake lock.
+var sensor = exports.accessory = new Accessory('Termostats', sensorUUID);
+
+// Add properties for publishing (in case we're using Core.js and not BridgedCore.js)
+sensor.username = "CA:3E:BC:4D:5E:FF";
+sensor.pincode = "031-45-154";
+
+// Add the actual TemperatureSensor Service.
+// We can see the complete list of Services and Characteristics in `lib/gen/HomeKitTypes.js`
+sensor
+  .addService(Service.Thermostat)
+  .getCharacteristic(Characteristic.CurrentTemperature)
+  .on('get', function(callback) {
+    callback(null, MY_SENSOR.getTemperature());
+});
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.TargetHeatingCoolingState)
+  .on('get', function(callback) {
+    callback(null, 19);
+}); 
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
+  .on('get', function(callback) {
+    callback(null, 0);
+});   
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.TargetTemperature)
+  .on('get', function(callback) {
+    callback(null, 20);
+});     
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.TemperatureDisplayUnits)
+  .on('get', function(callback) {
+    callback(null, "celsius");
+});     
+
+  
