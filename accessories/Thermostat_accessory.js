@@ -1,10 +1,17 @@
 // HomeKit types required
 var types = require("./types.js")
 var exports = module.exports = {};
+var http = require('http');
+var config = require('../config');
 
 var execute = function(accessory,characteristic,value){ console.log("executed accessory: " + accessory + ", and characteristic: " + characteristic + ", with value: " +  value + "."); }
 
-exports.accessory = {
+var MY_SENSOR = {
+  currentTemperature: 0,
+  currentHumidity: 0,
+};
+
+var sensor = exports.accessory = {
   displayName: "Thermostat 1",
   username: "CA:3E:BC:4D:5E:FF",
   pincode: "031-45-154",
@@ -133,3 +140,44 @@ exports.accessory = {
     }]
   }]
 }
+
+  function requestTemperature() {
+
+
+	var options = {
+		host: config.host,
+		port: config.port,
+		path: '/api/temperature',
+                headers: {
+                  'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
+                }  
+	};
+
+	http.get(options, function(resp){
+		var body = '';
+		resp.on('data', function(chunk){
+			body += chunk;
+		});
+		resp.on('end', function() {
+            // Data reception is done, do whatever with it!
+           var parsed = JSON.parse(body);
+           console.log(parsed.temp);
+           MY_SENSOR.currentTemperature = parsed.temp;
+        });
+	}).on("error", function(e){
+		console.log("Got error: " + e.message);
+	});
+  }
+
+setInterval(function() {
+  
+  requestTemperature();
+  
+  // update the characteristic value so interested iOS devices can get notified
+  sensor
+    .getService(Service.TemperatureSensor)
+    .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
+  
+}, 5000);
+
+
