@@ -1,0 +1,9 @@
+var config = {};
+
+config.auth = {
+    username: "test",
+    password: "test"
+};
+
+
+module.exports = config;

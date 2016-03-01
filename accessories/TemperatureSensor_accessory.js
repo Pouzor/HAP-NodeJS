@@ -3,6 +3,7 @@ var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
 var uuid = require('../').uuid;
 var http = require('http');
+var config = require('../config');
 
 // here's a fake temperature sensor device that we'll expose to HomeKit
 var MY_SENSOR = {
@@ -41,7 +42,7 @@ var MY_SENSOR = {
 		console.log("Got error: " + e.message);
 	});
   }
-}
+};
 
 
 // Generate a consistent UUID for our Temperature Sensor Accessory that will remain the same
