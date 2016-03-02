@@ -218,6 +218,13 @@ sensor
   .on('get', function(callback) {
     callback(null, "celsius");
 });     
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.CurrentRelativeHumidity)
+  .on('get', function(callback) {
+    callback(null, 55);
+}); 
+
 
  setInterval(function() {
   
