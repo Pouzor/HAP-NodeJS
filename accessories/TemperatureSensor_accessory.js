@@ -1,16 +1,12 @@
-// HomeKit types required
-var types = require("./types.js")
-var exports = module.exports = {};
-var http = require('http');
-var config = require('../config');
 var Accessory = require('../').Accessory;
 var Service = require('../').Service;
 var Characteristic = require('../').Characteristic;
 var uuid = require('../').uuid;
-
+var http = require('http');
+var config = require('../config');
 
 var MY_SENSOR = {
-  currentTemperature: 5,
+  currentTemperature: 1,
   getTemperature: function() {
     return MY_SENSOR.currentTemperature;
   },
@@ -45,63 +41,37 @@ var MY_SENSOR = {
 
 MY_SENSOR.requestTemperature();
 
-
-var sensorUUID = uuid.generate('hap-nodejs:accessories:termo');
+// Generate a consistent UUID for our Temperature Sensor Accessory that will remain the same
+// even when restarting our server. We use the `uuid.generate` helper function to create
+// a deterministic UUID based on an arbitrary "namespace" and the string "temperature-sensor".
+var sensorUUID = uuid.generate('hap-nodejs:accessories:temperature-sensor');
 
 // This is the Accessory that we'll return to HAP-NodeJS that represents our fake lock.
-var sensor = exports.accessory = new Accessory('Termostats', sensorUUID);
+var sensor = exports.accessory = new Accessory('Temperature Sensor', sensorUUID);
 
 // Add properties for publishing (in case we're using Core.js and not BridgedCore.js)
-sensor.username = "CA:3E:BC:4D:5E:FF";
+sensor.username = "C1:5D:3A:AE:5E:FA";
 sensor.pincode = "031-45-154";
 
 // Add the actual TemperatureSensor Service.
 // We can see the complete list of Services and Characteristics in `lib/gen/HomeKitTypes.js`
 sensor
-  .addService(Service.Thermostat)
+  .addService(Service.TemperatureSensor)
   .getCharacteristic(Characteristic.CurrentTemperature)
   .on('get', function(callback) {
+    
+    // return our current value
     callback(null, MY_SENSOR.getTemperature());
-});
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.TargetHeatingCoolingState)
-  .on('get', function(callback) {
-    callback(null, 0);
-});
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
-  .on('get', function(callback) {
-    callback(null, 0);
-});   
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.TargetTemperature)
-  .on('get', function(callback) {
-    callback(null, 20);
-});     
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.TemperatureDisplayUnits)
-  .on('get', function(callback) {
-    callback(null, "celsius");
-});     
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.CurrentRelativeHumidity)
-  .on('get', function(callback) {
-    callback(null, 55);
-}); 
+  });
 
-
- setInterval(function() {
+// randomize our temperature reading every 3 seconds
+setInterval(function() {
   
   MY_SENSOR.requestTemperature();
   
   // update the characteristic value so interested iOS devices can get notified
   sensor
-    .getService(Service.Thermostat)
+    .getService(Service.TemperatureSensor)
     .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
   
 }, 60000);
