@@ -62,7 +62,8 @@ sensor
     
     // return our current value
 	console.log("send " + MY_SENSOR.getTemperature());
-    callback(null, MY_SENSOR.getTemperature().toFixed(1));
+	var temp = parseFloat(MY_SENSOR.getTemperature());
+    callback(null, temp);
   });
 
 // randomize our temperature reading every 3 seconds
