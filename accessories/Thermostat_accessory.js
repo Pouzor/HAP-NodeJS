@@ -199,6 +199,11 @@ sensor
   .getCharacteristic(Characteristic.TargetHeatingCoolingState)
   .on('get', function(callback) {
     callback(null, 0);
+sensor
+  .getService(Service.Thermostat)
+  .getCharacteristic(Characteristic.CurrentTemperature)
+  .on('get', function(callback) {
+    callback(null, 15);
 }); 
 sensor
   .getService(Service.Thermostat)
@@ -235,4 +240,4 @@ sensor
     .getService(Service.Thermostat)
     .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
   
-}, 60000);
+}, 5000);
