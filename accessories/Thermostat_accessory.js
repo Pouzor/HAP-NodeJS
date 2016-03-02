@@ -10,17 +10,20 @@ var uuid = require('../').uuid;
 
 
 var MY_SENSOR = {
-  currentTemperature: 5,
+  currentTemperature: 0,
+  currentHumidity: 0,
   getTemperature: function() {
     return MY_SENSOR.currentTemperature;
   },
+  getHumidity: function() {
+    return MY_SENSOR.currentHumidity;
+  },
   requestTemperature: function() {
-
 
 	var options = {
 		host: config.host,
 		port: config.port,
-		path: '/api/temperature',
+		path: '/api/home',
                 headers: {
                   'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
                 }  
@@ -34,8 +37,8 @@ var MY_SENSOR = {
 		resp.on('end', function() {
             // Data reception is done, do whatever with it!
            var parsed = JSON.parse(body);
-            console.log(parsed.temp);
-           MY_SENSOR.currentTemperature = parsed.temp;
+           MY_SENSOR.currentTemperature = parsed.temperature;
+		   MY_SENSOR.currentHumidity = parsed.humidity;
         });
 	}).on("error", function(e){
 		console.log("Got error: " + e.message);
@@ -92,7 +95,8 @@ sensor
   .getService(Service.Thermostat)
   .getCharacteristic(Characteristic.CurrentRelativeHumidity)
   .on('get', function(callback) {
-    callback(null, 55);
+	var temp = parseFloat(MY_SENSOR.getHumidity());
+    callback(null, temp);
 }); 
 
 
@@ -103,6 +107,7 @@ sensor
   // update the characteristic value so interested iOS devices can get notified
   sensor
     .getService(Service.Thermostat)
-    .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);
+    .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature)
+	.setCharacteristic(Characteristic.CurrentRelativeHumidity, MY_SENSOR.currentHumidity);
   
 }, 60000);

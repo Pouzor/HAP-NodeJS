@@ -16,7 +16,7 @@ var MY_SENSOR = {
 	var options = {
 		host: config.host,
 		port: config.port,
-		path: '/api/temperature',
+		path: '/api/home',
                 headers: {
                   'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
                 }  
@@ -30,8 +30,7 @@ var MY_SENSOR = {
 		resp.on('end', function() {
             // Data reception is done, do whatever with it!
            var parsed = JSON.parse(body);
-            
-           MY_SENSOR.currentTemperature = parsed.temp;
+           MY_SENSOR.currentTemperature = parsed.temperature;
         });
 	}).on("error", function(e){
 		console.log("Got error: " + e.message);
