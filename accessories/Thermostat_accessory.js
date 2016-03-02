@@ -10,7 +10,7 @@ var uuid = require('../').uuid;
 
 
 var MY_SENSOR = {
-  currentTemperature: 0,
+  currentTemperature: 5,
   getTemperature: function() {
     return MY_SENSOR.currentTemperature;
   },
@@ -200,12 +200,6 @@ sensor
   .on('get', function(callback) {
     callback(null, 0);
 });
-sensor
-  .getService(Service.Thermostat)
-  .getCharacteristic(Characteristic.CurrentTemperature)
-  .on('get', function(callback) {
-    callback(null, 15);
-}); 
 sensor
   .getService(Service.Thermostat)
   .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
