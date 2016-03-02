@@ -140,7 +140,7 @@ var accessory = {
       manfDescription: "Unit"
     }]
   }]
-});
+};
 
 var sensorUUID = uuid.generate('hap-nodejs:accessories:termo');
 
