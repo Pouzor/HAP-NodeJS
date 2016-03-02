@@ -30,7 +30,7 @@ var MY_SENSOR = {
 		resp.on('end', function() {
             // Data reception is done, do whatever with it!
            var parsed = JSON.parse(body);
-            console.log(parsed.temp);
+            
            MY_SENSOR.currentTemperature = parsed.temp;
         });
 	}).on("error", function(e){
@@ -61,6 +61,7 @@ sensor
   .on('get', function(callback) {
     
     // return our current value
+	console.log("send " + MY_SENSOR.getTemperature());
     callback(null, MY_SENSOR.getTemperature());
   });
 
