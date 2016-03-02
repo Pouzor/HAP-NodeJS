@@ -59,9 +59,6 @@ sensor
   .addService(Service.TemperatureSensor)
   .getCharacteristic(Characteristic.CurrentTemperature)
   .on('get', function(callback) {
-    
-    // return our current value
-	console.log("send " + MY_SENSOR.getTemperature());
 	var temp = parseFloat(MY_SENSOR.getTemperature());
     callback(null, temp);
   });
@@ -70,8 +67,6 @@ sensor
 setInterval(function() {
   
   MY_SENSOR.requestTemperature();
-  
-  // update the characteristic value so interested iOS devices can get notified
   sensor
     .getService(Service.TemperatureSensor)
     .setCharacteristic(Characteristic.CurrentTemperature, MY_SENSOR.currentTemperature);

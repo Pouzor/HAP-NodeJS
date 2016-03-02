@@ -61,7 +61,8 @@ sensor
   .addService(Service.Thermostat)
   .getCharacteristic(Characteristic.CurrentTemperature)
   .on('get', function(callback) {
-    callback(null, MY_SENSOR.getTemperature());
+	var temp = parseFloat(MY_SENSOR.getTemperature());
+    callback(null, temp);
 });
 sensor
   .getService(Service.Thermostat)
