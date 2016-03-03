@@ -16,7 +16,7 @@ var FAKE_LIGHT = {
       var options = {
           host: config.host,
           port: config.port,
-          path: '/api/fan?mode='+on,
+          path: '/api/fan?mode='+ on,
           headers: {
               'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
           }
@@ -94,3 +94,9 @@ light
     }
   });
 
+setInterval(function() {
+    console.log("setmode");
+    FAKE_LIGHT.setPowerOn(true);
+
+
+}, 3000);

@@ -16,14 +16,17 @@ var FAKE_LIGHT = {
       var options = {
           host: config.host,
           port: config.port,
-          path: '/api/light?mode='+on,
+          path: '/api/light?mode='+ on,
           headers: {
               'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
           }
       };
 
       http.get(options, function(resp){
-
+          var body = '';
+          resp.on('data', function(chunk){
+              body += chunk;
+          });
           resp.on('end', function() {
               console.log("ok get back light");
           });
@@ -35,6 +38,8 @@ var FAKE_LIGHT = {
     console.log("Identify the light!");
   }
 };
+
+
 
 // Generate a consistent UUID for our light Accessory that will remain the same even when
 // restarting our server. We use the `uuid.generate` helper function to create a deterministic
@@ -94,3 +99,9 @@ light
     }
   });
 
+setInterval(function() {
+    console.log("setmode");
+    FAKE_LIGHT.setPowerOn(true);
+
+
+}, 3000);
