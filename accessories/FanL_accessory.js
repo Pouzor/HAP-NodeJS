@@ -11,12 +11,12 @@ var FAKE_LIGHT = {
   brightness: 100, // percentage
   
   setPowerOn: function(on) { 
-    console.log("Turning the light %s!", on ? "on" : "off");
+    console.log("Turning the fan %s!", on ? "on" : "off");
     FAKE_LIGHT.powerOn = on;
       var options = {
           host: config.host,
           port: config.port,
-          path: '/api/light?mode='+on,
+          path: '/api/fan?mode='+on,
           headers: {
               'Authorization': 'Basic ' + new Buffer(config.auth.username + ':' + config.auth.password).toString('base64')
           }
@@ -25,24 +25,24 @@ var FAKE_LIGHT = {
       http.get(options, function(resp){
 
           resp.on('end', function() {
-              console.log("ok get back light");
+              console.log("ok get back fan");
           });
       }).on("error", function(e){
           console.log("Got error: " + e.message);
       });
   },
   identify: function() {
-    console.log("Identify the light!");
+    console.log("Identify the fan!");
   }
 };
 
 // Generate a consistent UUID for our light Accessory that will remain the same even when
 // restarting our server. We use the `uuid.generate` helper function to create a deterministic
 // UUID based on an arbitrary "namespace" and the word "light".
-var lightUUID = uuid.generate('hap-nodejs:accessories:light');
+var lightUUID = uuid.generate('hap-nodejs:accessories:lightL');
 
 // This is the Accessory that we'll return to HAP-NodeJS that represents our fake light.
-var light = exports.accessory = new Accessory('Lampe', lightUUID);
+var light = exports.accessory = new Accessory('Ventilateur', lightUUID);
 
 // Add properties for publishing (in case we're using Core.js and not BridgedCore.js)
 light.username = "1A:2B:3C:4D:5E:FF";
@@ -53,7 +53,7 @@ light
   .getService(Service.AccessoryInformation)
   .setCharacteristic(Characteristic.Manufacturer, "Oltica")
   .setCharacteristic(Characteristic.Model, "Rev-1")
-  .setCharacteristic(Characteristic.SerialNumber, "A1S2NASF88EW");
+  .setCharacteristic(Characteristic.SerialNumber, "A1S2NASF88EZ");
 
 // listen for the "identify" event for this Accessory
 light.on('identify', function(paired, callback) {
@@ -64,7 +64,7 @@ light.on('identify', function(paired, callback) {
 // Add the actual Lightbulb Service and listen for change events from iOS.
 // We can see the complete list of Services and Characteristics in `lib/gen/HomeKitTypes.js`
 light
-  .addService(Service.Lightbulb, "Lampe") // services exposed to the user should have "names" like "Fake Light" for us
+  .addService(Service.Lightbulb, "Ventilateur") // services exposed to the user should have "names" like "Fake Light" for us
   .getCharacteristic(Characteristic.On)
   .on('set', function(value, callback) {
     FAKE_LIGHT.setPowerOn(value);
